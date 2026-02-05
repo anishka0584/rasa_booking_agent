@@ -1,0 +1,97 @@
+version: "3.1"
+
+intents:
+  - greet
+  - book_hotel
+  - inform
+  - goodbye
+
+entities:
+  - city
+  - check_in_date
+  - check_out_date
+  - number_of_guests
+
+slots:
+  city:
+    type: text #stores a string
+    influence_conversation: false #slot value will not affect intent prediction
+    mappings:
+      - type: from_entity #intelligent extraction when form is not running
+        entity: city #if rasa detects an entity called city- it will store it in this slot
+      - type: from_text #extraction when form is running- take whatever the user types and store in slot
+        conditions:
+          - active_loop: hotel_booking_form #form needs to be active
+            requested_slot: city
+
+  check_in_date:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: check_in_date
+        conditions:
+          - active_loop: null
+      - type: from_text
+        conditions:
+          - active_loop: hotel_booking_form
+            requested_slot: check_in_date
+
+  check_out_date:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: check_out_date
+        conditions:
+          - active_loop: null
+      - type: from_text
+        conditions:
+          - active_loop: hotel_booking_form
+            requested_slot: check_out_date
+
+  number_of_guests:
+    type: float
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: number_of_guests
+      - type: from_text
+        conditions:
+          - active_loop: hotel_booking_form
+            requested_slot: number_of_guests
+
+responses:
+  utter_greet:
+    - text: "Hello 👋 How can I help you today?"
+
+  utter_ask_city:
+    - text: "Which city are you traveling to?"
+
+  utter_ask_check_in_date:
+    - text: "What is your check-in date?"
+
+  utter_ask_check_out_date:
+    - text: "What is your check-out date?"
+
+  utter_ask_number_of_guests:
+    - text: "How many guests will be staying?"
+
+  utter_booking_confirmation:
+    - text: |
+        ✅ Your hotel in {city} from {check_in_date} to {check_out_date}
+        for {number_of_guests} guests has been booked!
+
+  utter_goodbye:
+    - text: "Goodbye 👋 Have a great day!"
+
+forms:
+  hotel_booking_form:
+    ignored_intents:
+      - greet
+      - goodbye
+    required_slots:
+      - city
+      - check_in_date
+      - check_out_date
+      - number_of_guests

@@ -1,0 +1,389 @@
+version: "3.1"
+
+nlu:
+
+- intent: greet
+  examples: |
+    - hi
+    - hello
+    - hey
+    - good morning
+    - good afternoon
+    - good evening
+    - hi there
+    - hey there
+    - greetings
+    - what's up
+    - howdy
+    - yo
+
+- intent: book_hotel
+  examples: |
+    - I want to book a hotel
+    - Book a hotel for me
+    - I need a hotel
+    - Help me book a hotel
+    - Can you book a hotel
+    - I'd like to reserve a hotel
+    - Need hotel accommodation
+    - Looking for a hotel
+    - Want to make a hotel reservation
+    - Help me find a hotel
+    
+    # With city
+    - I want to book a hotel in [Delhi](city)
+    - Book a hotel in [Mumbai](city)
+    - I need a hotel in [Bangalore](city)
+    - Looking for a hotel in [Chennai](city)
+    - Want to stay in [Hyderabad](city)
+    - Book me a hotel in [Pune](city)
+    - I want to reserve a hotel in [Kolkata](city)
+    - Need accommodation in [Goa](city)
+    - Find me a hotel in [Jaipur](city)
+    - I want a hotel in [Kochi](city)
+    - Book a hotel in [Ahmedabad](city)
+    - Looking for hotels in [Lucknow](city)
+    
+    # With number of guests
+    - I want to book a hotel for [1](number_of_guests) person
+    - I want to book a hotel for [2](number_of_guests) people
+    - I want to book a hotel for [3](number_of_guests) people
+    - I want to book a hotel for [4](number_of_guests) people
+    - I want to book a hotel for [5](number_of_guests) people
+    - I want to book a hotel for [6](number_of_guests) people
+    - I want to book a hotel for [7](number_of_guests) people
+    - I want to book a hotel for [8](number_of_guests) people
+    - I want to book a hotel for [10](number_of_guests) people
+    - I want to book a hotel for [12](number_of_guests) people
+    - Book a hotel for [2](number_of_guests) guests
+    - Book a hotel for [3](number_of_guests) guests
+    - Book a hotel for [4](number_of_guests) guests
+    - Book a hotel for [5](number_of_guests) guests
+    - Book a hotel for [6](number_of_guests) guests
+    - Need a hotel for [2](number_of_guests) people
+    - Need a hotel for [4](number_of_guests) people
+    - Looking for a hotel for [3](number_of_guests) guests
+    - We are [5](number_of_guests) people
+    - Party of [4](number_of_guests)
+    - [2](number_of_guests) adults
+    
+    # With city and guests
+    - Book a hotel in [Goa](city) for [4](number_of_guests) guests
+    - I want a hotel in [Mumbai](city) for [2](number_of_guests) people
+    - Need a hotel in [Delhi](city) for [3](number_of_guests) guests
+    - Book a hotel in [Bangalore](city) for [5](number_of_guests) people
+    - I want to stay in [Pune](city) for [3](number_of_guests) people
+    - Looking for a hotel in [Chennai](city) for [4](number_of_guests) guests
+    - Reserve a hotel in [Hyderabad](city) for [6](number_of_guests) people
+    - Find me a hotel in [Kolkata](city) for [2](number_of_guests) guests
+    
+    - book a hotel from [1 jan](check_in_date)
+    - I want to book a hotel from [5 may](check_in_date)
+    - book a hotel from [10 june](check_in_date)
+    - I need a hotel from [15 july](check_in_date)
+    - book from [20 aug](check_in_date)
+    - I want a hotel from [25 sep](check_in_date)
+    - book a hotel from [1 jan](check_in_date) to [5 jan](check_out_date)
+    - I want to book from [5 may](check_in_date) to [10 may](check_out_date)
+    - book from [10 june](check_in_date) until [15 june](check_out_date)
+    - I need a hotel from [1 july](check_in_date) till [5 july](check_out_date)
+    - book a hotel from [20 aug](check_in_date) to [25 aug](check_out_date)
+
+    - book a hotel on [1 jan](check_in_date)
+    - I want to book a hotel on [5 may](check_in_date)
+    - book on [10 june](check_in_date)
+    - I need a hotel on [15 july](check_in_date)
+
+
+    # With dates
+    - I want to book a hotel on [5 dec](check_in_date)
+    - Book a hotel from [10 jan](check_in_date)
+    - I want to book a hotel in [Bangalore](city) on [5 dec](check_in_date)
+    - Book a hotel in [Chennai](city) from [10 jan](check_in_date)
+    - I need a hotel from [15 march](check_in_date) to [20 march](check_out_date)
+    - Book a hotel from [1 may](check_in_date) to [5 may](check_out_date)
+    - I want a hotel from [7 june](check_in_date) to [10 june](check_out_date)
+    
+    # With city, dates, and guests
+    - Book a hotel in [Delhi](city) on [7 may](check_in_date) for [2](number_of_guests) guests
+    - I want to book a hotel in [Mumbai](city) for [8](number_of_guests) people on [15 june](check_in_date)
+    - Need a hotel in [Bangalore](city) from [1 july](check_in_date) to [5 july](check_out_date) for [3](number_of_guests) people
+    - Book a hotel in [Chennai](city) for [4](number_of_guests) guests from [10 aug](check_in_date) to [15 aug](check_out_date)
+    - I want to stay in [Goa](city) for [2](number_of_guests) people from [20 dec](check_in_date) to [25 dec](check_out_date)
+    - Reserve a hotel in [Pune](city) on [5 sep](check_in_date) for [5](number_of_guests) guests
+    - Find me a hotel in [Hyderabad](city) for [3](number_of_guests) people on [12 oct](check_in_date)
+    - I need accommodation in [Jaipur](city) from [8 nov](check_in_date) for [6](number_of_guests) people
+    - book a hotel from [1 may](check_in_date) to [5 may](check_out_date)
+    - I want a hotel from [5 july](check_in_date) to [8 july](check_out_date)
+    - book from [2 sep](check_in_date) to [4 sep](check_out_date)
+    - I need a hotel from [10 june](check_in_date) until [15 june](check_out_date)
+    - from [1 jan](check_in_date) till [5 jan](check_out_date)
+
+
+- intent: inform
+  examples: |
+    # Cities
+    - [Bangalore](city)
+    - [Mumbai](city)
+    - [Delhi](city)
+    - [Chennai](city)
+    - [Hyderabad](city)
+    - [Pune](city)
+    - [Kolkata](city)
+    - [Goa](city)
+    - [Jaipur](city)
+    - [Kochi](city)
+    - [Ahmedabad](city)
+    - [Lucknow](city)
+    - [Chandigarh](city)
+    - [Indore](city)
+    - [Surat](city)
+    - [Nagpur](city)
+    - [Visakhapatnam](city)
+    - [Bhopal](city)
+    - [Coimbatore](city)
+    - [Mysore](city)
+    - I am traveling to [Chennai](city)
+    - The city is [Hyderabad](city)
+    - Going to [Pune](city)
+    - Book it in [Goa](city)
+    - I want to go to [Mumbai](city)
+    - Traveling to [Bangalore](city)
+    - The destination is [Delhi](city)
+    - I'll be in [Kolkata](city)
+    
+    # Check-in dates - January to December
+    - [1 jan](check_in_date)
+    - [5 jan](check_in_date)
+    - [10 jan](check_in_date)
+    - [15 jan](check_in_date)
+    - [20 jan](check_in_date)
+    - [25 jan](check_in_date)
+    - [30 jan](check_in_date)
+    - [1 feb](check_in_date)
+    - [5 feb](check_in_date)
+    - [10 feb](check_in_date)
+    - [14 feb](check_in_date)
+    - [20 feb](check_in_date)
+    - [28 feb](check_in_date)
+    - [1 march](check_in_date)
+    - [5 march](check_in_date)
+    - [10 march](check_in_date)
+    - [15 march](check_in_date)
+    - [20 march](check_in_date)
+    - [25 march](check_in_date)
+    - [1 april](check_in_date)
+    - [5 april](check_in_date)
+    - [10 april](check_in_date)
+    - [15 april](check_in_date)
+    - [20 april](check_in_date)
+    - [1 may](check_in_date)
+    - [5 may](check_in_date)
+    - [7 may](check_in_date)
+    - [10 may](check_in_date)
+    - [15 may](check_in_date)
+    - [20 may](check_in_date)
+    - [1 june](check_in_date)
+    - [5 june](check_in_date)
+    - [10 june](check_in_date)
+    - [15 june](check_in_date)
+    - [20 june](check_in_date)
+    - [1 july](check_in_date)
+    - [5 july](check_in_date)
+    - [10 july](check_in_date)
+    - [15 july](check_in_date)
+    - [20 july](check_in_date)
+    - [1 aug](check_in_date)
+    - [5 aug](check_in_date)
+    - [10 aug](check_in_date)
+    - [15 aug](check_in_date)
+    - [20 aug](check_in_date)
+    - [1 sep](check_in_date)
+    - [5 sep](check_in_date)
+    - [10 sep](check_in_date)
+    - [15 sep](check_in_date)
+    - [20 sep](check_in_date)
+    - [1 oct](check_in_date)
+    - [5 oct](check_in_date)
+    - [10 oct](check_in_date)
+    - [15 oct](check_in_date)
+    - [20 oct](check_in_date)
+    - [1 nov](check_in_date)
+    - [5 nov](check_in_date)
+    - [10 nov](check_in_date)
+    - [15 nov](check_in_date)
+    - [20 nov](check_in_date)
+    - [1 dec](check_in_date)
+    - [5 dec](check_in_date)
+    - [10 dec](check_in_date)
+    - [15 dec](check_in_date)
+    - [20 dec](check_in_date)
+    - [25 dec](check_in_date)
+    - [jan 1](check_in_date)
+    - [jan 10](check_in_date)
+    - [feb 5](check_in_date)
+    - [march 15](check_in_date)
+    - [april 20](check_in_date)
+    - [may 7](check_in_date)
+    - [june 10](check_in_date)
+    - [july 5](check_in_date)
+    - [aug 15](check_in_date)
+    - [sep 2](check_in_date)
+    - [oct 12](check_in_date)
+    - [nov 8](check_in_date)
+    - [dec 25](check_in_date)
+    - check in on [10 june](check_in_date)
+    - my check in date is [1 july](check_in_date)
+    - I will arrive on [15 august](check_in_date)
+    - starting from [3 dec](check_in_date)
+    - arriving on [5 may](check_in_date)
+    - check in is [20 june](check_in_date)
+    - I'll be there on [12 july](check_in_date)
+    
+    # Check-out dates
+    - [3 jan](check_out_date)
+    - [8 jan](check_out_date)
+    - [12 jan](check_out_date)
+    - [18 jan](check_out_date)
+    - [22 jan](check_out_date)
+    - [28 jan](check_out_date)
+    - [3 feb](check_out_date)
+    - [8 feb](check_out_date)
+    - [12 feb](check_out_date)
+    - [17 feb](check_out_date)
+    - [22 feb](check_out_date)
+    - [3 march](check_out_date)
+    - [8 march](check_out_date)
+    - [12 march](check_out_date)
+    - [18 march](check_out_date)
+    - [22 march](check_out_date)
+    - [28 march](check_out_date)
+    - [3 april](check_out_date)
+    - [8 april](check_out_date)
+    - [12 april](check_out_date)
+    - [18 april](check_out_date)
+    - [22 april](check_out_date)
+    - [3 may](check_out_date)
+    - [8 may](check_out_date)
+    - [10 may](check_out_date)
+    - [12 may](check_out_date)
+    - [18 may](check_out_date)
+    - [22 may](check_out_date)
+    - [3 june](check_out_date)
+    - [8 june](check_out_date)
+    - [12 june](check_out_date)
+    - [18 june](check_out_date)
+    - [22 june](check_out_date)
+    - [3 july](check_out_date)
+    - [8 july](check_out_date)
+    - [12 july](check_out_date)
+    - [18 july](check_out_date)
+    - [22 july](check_out_date)
+    - [3 aug](check_out_date)
+    - [8 aug](check_out_date)
+    - [12 aug](check_out_date)
+    - [18 aug](check_out_date)
+    - [22 aug](check_out_date)
+    - [3 sep](check_out_date)
+    - [8 sep](check_out_date)
+    - [12 sep](check_out_date)
+    - [18 sep](check_out_date)
+    - [22 sep](check_out_date)
+    - [3 oct](check_out_date)
+    - [8 oct](check_out_date)
+    - [12 oct](check_out_date)
+    - [18 oct](check_out_date)
+    - [22 oct](check_out_date)
+    - [3 nov](check_out_date)
+    - [8 nov](check_out_date)
+    - [12 nov](check_out_date)
+    - [18 nov](check_out_date)
+    - [22 nov](check_out_date)
+    - [3 dec](check_out_date)
+    - [8 dec](check_out_date)
+    - [12 dec](check_out_date)
+    - [18 dec](check_out_date)
+    - [22 dec](check_out_date)
+    - [28 dec](check_out_date)
+    - [jan 3](check_out_date)
+    - [jan 12](check_out_date)
+    - [feb 8](check_out_date)
+    - [march 18](check_out_date)
+    - [april 22](check_out_date)
+    - [may 10](check_out_date)
+    - [june 12](check_out_date)
+    - [july 8](check_out_date)
+    - [aug 18](check_out_date)
+    - [sep 4](check_out_date)
+    - [oct 15](check_out_date)
+    - [nov 12](check_out_date)
+    - [dec 28](check_out_date)
+    - check out on [12 june](check_out_date)
+    - leaving on [5 july](check_out_date)
+    - my checkout date is [20 august](check_out_date)
+    - until [8 dec](check_out_date)
+    - departure on [15 may](check_out_date)
+    - checking out on [22 june](check_out_date)
+    - I'll leave on [18 july](check_out_date)
+
+    # Number of guests
+    - [1](number_of_guests)
+    - [2](number_of_guests)
+    - [3](number_of_guests)
+    - [4](number_of_guests)
+    - [5](number_of_guests)
+    - [6](number_of_guests)
+    - [7](number_of_guests)
+    - [8](number_of_guests)
+    - [9](number_of_guests)
+    - [10](number_of_guests)
+    - [11](number_of_guests)
+    - [12](number_of_guests)
+    - [15](number_of_guests)
+    - [20](number_of_guests)
+    - for [1](number_of_guests) person
+    - for [2](number_of_guests) people
+    - for [3](number_of_guests) people
+    - for [4](number_of_guests) people
+    - for [5](number_of_guests) people
+    - for [6](number_of_guests) people
+    - for [8](number_of_guests) people
+    - for [10](number_of_guests) people
+    - [2](number_of_guests) guests
+    - [3](number_of_guests) guests
+    - [4](number_of_guests) guests
+    - [5](number_of_guests) guests
+    - [6](number_of_guests) guests
+    - [7](number_of_guests) guests
+    - [8](number_of_guests) guests
+    - we are [2](number_of_guests) people
+    - we are [3](number_of_guests) people
+    - we are [4](number_of_guests) people
+    - we are [5](number_of_guests) people
+    - booking for [6](number_of_guests)
+    - booking for [4](number_of_guests)
+    - [3](number_of_guests) people
+    - [5](number_of_guests) people
+    - just [1](number_of_guests)
+    - party of [4](number_of_guests)
+    - group of [6](number_of_guests)
+
+- intent: goodbye
+  examples: |
+    - bye
+    - goodbye
+    - see you
+    - see you later
+    - talk to you later
+    - catch you later
+    - thank you
+    - thanks
+    - thanks a lot
+    - thank you so much
+    - okay
+    - ok
+    - done
+    - that's all
+    - nothing else
+    - I'm good
+    - all set

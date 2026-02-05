@@ -1,0 +1,142 @@
+version: "3.1"
+
+stories:
+
+- story: hotel booking - greet first
+  steps:
+    - intent: greet
+    - action: utter_greet
+    - intent: book_hotel
+    - action: hotel_booking_form
+    - active_loop: hotel_booking_form
+    - active_loop: null
+    - action: utter_booking_confirmation
+
+- story: hotel booking - direct booking
+  steps:
+    - intent: book_hotel
+    - action: hotel_booking_form
+    - active_loop: hotel_booking_form
+    - active_loop: null
+    - action: utter_booking_confirmation
+
+- story: hotel booking with city prefilled
+  steps:
+    - intent: book_hotel
+      entities:
+        - city
+    - action: hotel_booking_form
+    - active_loop: hotel_booking_form
+    - active_loop: null
+    - action: utter_booking_confirmation
+
+- story: hotel booking with city and guests prefilled
+  steps:
+    - intent: book_hotel
+      entities:
+        - city
+        - number_of_guests
+    - action: hotel_booking_form
+    - active_loop: hotel_booking_form
+    - active_loop: null
+    - action: utter_booking_confirmation
+
+- story: hotel booking with all details
+  steps:
+    - intent: book_hotel
+      entities:
+        - city
+        - check_in_date
+        - check_out_date
+        - number_of_guests
+    - action: hotel_booking_form
+    - active_loop: hotel_booking_form
+    - active_loop: null
+    - action: utter_booking_confirmation
+
+- story: hotel booking with dates prefilled
+  steps:
+    - intent: book_hotel
+      entities:
+        - check_in_date
+        - check_out_date
+    - action: hotel_booking_form
+    - active_loop: hotel_booking_form
+    - active_loop: null
+    - action: utter_booking_confirmation
+
+- story: hotel booking then goodbye
+  steps:
+    - intent: book_hotel
+    - action: hotel_booking_form
+    - active_loop: hotel_booking_form
+    - active_loop: null
+    - action: utter_booking_confirmation
+    - intent: goodbye
+    - action: utter_goodbye
+
+- story: greet then goodbye
+  steps:
+    - intent: greet
+    - action: utter_greet
+    - intent: goodbye
+    - action: utter_goodbye
+
+- story: hotel booking interrupted by greet
+  steps:
+    - intent: book_hotel
+    - action: hotel_booking_form
+    - active_loop: hotel_booking_form
+    - intent: greet
+    - action: utter_greet
+    - action: hotel_booking_form
+    - active_loop: null
+    - action: utter_booking_confirmation
+
+- story: provide city during form
+  steps:
+    - intent: book_hotel
+    - action: hotel_booking_form
+    - active_loop: hotel_booking_form
+    - slot_was_set:
+      - requested_slot: city
+    - intent: inform
+      entities:
+        - city
+    - action: hotel_booking_form
+    - active_loop: null
+    - action: utter_booking_confirmation
+
+- story: provide dates during form
+  steps:
+    - intent: book_hotel
+    - action: hotel_booking_form
+    - active_loop: hotel_booking_form
+    - slot_was_set:
+      - requested_slot: check_in_date
+    - intent: inform
+      entities:
+        - check_in_date
+    - action: hotel_booking_form
+    - slot_was_set:
+      - requested_slot: check_out_date
+    - intent: inform
+      entities:
+        - check_out_date
+    - action: hotel_booking_form
+    - active_loop: null
+    - action: utter_booking_confirmation
+
+- story: provide number of guests during form
+  steps:
+    - intent: book_hotel
+    - action: hotel_booking_form
+    - active_loop: hotel_booking_form
+    - slot_was_set:
+      - requested_slot: number_of_guests
+    - intent: inform
+      entities:
+        - number_of_guests
+    - action: hotel_booking_form
+    - active_loop: null
+    - action: utter_booking_confirmation
