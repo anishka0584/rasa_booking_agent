@@ -10,6 +10,7 @@ rules:
 - rule: Start hotel booking form
   steps:
     - intent: book_hotel
+    - action: action_store_initial_message
     - action: hotel_booking_form
     - active_loop: hotel_booking_form
 

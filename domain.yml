@@ -14,24 +14,20 @@ entities:
 
 slots:
   city:
-    type: text #stores a string
-    influence_conversation: false #slot value will not affect intent prediction
+    type: text
+    influence_conversation: false
     mappings:
-      - type: from_entity #intelligent extraction when form is not running
-        entity: city #if rasa detects an entity called city- it will store it in this slot
-      - type: from_text #extraction when form is running- take whatever the user types and store in slot
+      - type: from_entity
+        entity: city
+      - type: from_text
         conditions:
-          - active_loop: hotel_booking_form #form needs to be active
+          - active_loop: hotel_booking_form
             requested_slot: city
 
   check_in_date:
     type: text
     influence_conversation: false
     mappings:
-      - type: from_entity
-        entity: check_in_date
-        conditions:
-          - active_loop: null
       - type: from_text
         conditions:
           - active_loop: hotel_booking_form
@@ -41,10 +37,6 @@ slots:
     type: text
     influence_conversation: false
     mappings:
-      - type: from_entity
-        entity: check_out_date
-        conditions:
-          - active_loop: null
       - type: from_text
         conditions:
           - active_loop: hotel_booking_form
@@ -61,6 +53,14 @@ slots:
           - active_loop: hotel_booking_form
             requested_slot: number_of_guests
 
+  initial_message:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_text
+        conditions:
+          - active_loop: null
+          
 responses:
   utter_greet:
     - text: "Hello 👋 How can I help you today?"
@@ -95,3 +95,7 @@ forms:
       - check_in_date
       - check_out_date
       - number_of_guests
+
+actions:
+  - validate_hotel_booking_form
+  - action_store_initial_message

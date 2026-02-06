@@ -30,6 +30,13 @@ nlu:
     - Want to make a hotel reservation
     - Help me find a hotel
     
+    - book a hotel for [tomorrow](check_in_date)
+    - I want to book a hotel [tomorrow](check_in_date)
+    - book a hotel starting [tomorrow](check_in_date)
+    - I need a hotel from [tomorrow](check_in_date)
+    - book hotel [tomorrow](check_in_date) in [Mumbai](city)
+    - I want to book a hotel in [Goa](city) from [tomorrow](check_in_date)
+    
     # With city
     - I want to book a hotel in [Delhi](city)
     - Book a hotel in [Mumbai](city)
@@ -153,6 +160,32 @@ nlu:
     - I'll be in [Kolkata](city)
     
     # Check-in dates - January to December
+        - [today](check_in_date)
+    - [tomorrow](check_in_date)
+    - [tmrw](check_in_date)
+    - [day after tomorrow](check_in_date)
+    - [next week](check_in_date)
+    
+    # Check-in dates with context
+    - [1 jan](check_in_date)
+    - [5 jan](check_in_date)
+    - [10 july](check_in_date)
+    - [5 july](check_in_date)
+    - [2 sep](check_in_date)
+    - check in on [10 june](check_in_date)
+    - checking in on [5 july](check_in_date)
+    - arriving on [5 may](check_in_date)
+    - arrival on [10 july](check_in_date)
+    - my check in date is [1 july](check_in_date)
+    - I will arrive on [15 august](check_in_date)
+    - starting from [3 dec](check_in_date)
+    - from [5 july](check_in_date)
+    - on [5 july](check_in_date)
+    - [5 july](check_in_date) check in
+    - [tomorrow](check_in_date)
+    - checking in [tomorrow](check_in_date)
+    - [today](check_in_date)
+
     - [1 jan](check_in_date)
     - [5 jan](check_in_date)
     - [10 jan](check_in_date)
@@ -241,6 +274,15 @@ nlu:
     - I'll be there on [12 july](check_in_date)
     
     # Check-out dates
+    - [tomorrow](check_out_date)
+    - [today](check_out_date)
+    - [day after tomorrow](check_out_date)
+    - leaving [tomorrow](check_out_date)
+    - checking out [tomorrow](check_out_date)
+    
+    # Check-out dates
+    - [3 jan](check_out_date)
+    - [8 jan](check_out_date)
     - [3 jan](check_out_date)
     - [8 jan](check_out_date)
     - [12 jan](check_out_date)

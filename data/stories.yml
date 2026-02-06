@@ -7,6 +7,7 @@ stories:
     - intent: greet
     - action: utter_greet
     - intent: book_hotel
+    - action: action_store_initial_message
     - action: hotel_booking_form
     - active_loop: hotel_booking_form
     - active_loop: null
@@ -15,6 +16,7 @@ stories:
 - story: hotel booking - direct booking
   steps:
     - intent: book_hotel
+    - action: action_store_initial_message
     - action: hotel_booking_form
     - active_loop: hotel_booking_form
     - active_loop: null
@@ -25,6 +27,7 @@ stories:
     - intent: book_hotel
       entities:
         - city
+    - action: action_store_initial_message
     - action: hotel_booking_form
     - active_loop: hotel_booking_form
     - active_loop: null
@@ -36,6 +39,7 @@ stories:
       entities:
         - city
         - number_of_guests
+    - action: action_store_initial_message
     - action: hotel_booking_form
     - active_loop: hotel_booking_form
     - active_loop: null
@@ -49,6 +53,7 @@ stories:
         - check_in_date
         - check_out_date
         - number_of_guests
+    - action: action_store_initial_message
     - action: hotel_booking_form
     - active_loop: hotel_booking_form
     - active_loop: null
@@ -60,6 +65,7 @@ stories:
       entities:
         - check_in_date
         - check_out_date
+    - action: action_store_initial_message
     - action: hotel_booking_form
     - active_loop: hotel_booking_form
     - active_loop: null
@@ -68,6 +74,7 @@ stories:
 - story: hotel booking then goodbye
   steps:
     - intent: book_hotel
+    - action: action_store_initial_message
     - action: hotel_booking_form
     - active_loop: hotel_booking_form
     - active_loop: null
@@ -85,6 +92,7 @@ stories:
 - story: hotel booking interrupted by greet
   steps:
     - intent: book_hotel
+    - action: action_store_initial_message
     - action: hotel_booking_form
     - active_loop: hotel_booking_form
     - intent: greet
@@ -96,6 +104,7 @@ stories:
 - story: provide city during form
   steps:
     - intent: book_hotel
+    - action: action_store_initial_message
     - action: hotel_booking_form
     - active_loop: hotel_booking_form
     - slot_was_set:
@@ -110,6 +119,7 @@ stories:
 - story: provide dates during form
   steps:
     - intent: book_hotel
+    - action: action_store_initial_message
     - action: hotel_booking_form
     - active_loop: hotel_booking_form
     - slot_was_set:
@@ -130,6 +140,7 @@ stories:
 - story: provide number of guests during form
   steps:
     - intent: book_hotel
+    - action: action_store_initial_message
     - action: hotel_booking_form
     - active_loop: hotel_booking_form
     - slot_was_set:
