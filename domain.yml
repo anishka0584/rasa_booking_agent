@@ -49,9 +49,10 @@ slots:
     mappings:
       - type: from_entity
         entity: number_of_guests
-        conditions:
-        - active_loop: hotel_booking_form
-          requested_slot: number_of_guests
+        #this condition only fills the number of guests if the form is active- not direct extraction from the initial message
+        # conditions:
+        # - active_loop: hotel_booking_form
+        #   requested_slot: number_of_guests
       - type: from_text
         conditions:
           - active_loop: hotel_booking_form
