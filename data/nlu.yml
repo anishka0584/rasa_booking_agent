@@ -429,3 +429,23 @@ nlu:
     - nothing else
     - I'm good
     - all set
+
+- intent: out_of_scope
+  examples: |
+    - asdfasdf
+    - roegero
+    - ftbf
+    - blah blah
+    - random text
+    - ergerg
+    - qwerqwer
+    - xyz
+    - nonsense
+    - gibberish
+    - dfgdfg
+    - hjkhjk
+    - hahaha
+    - nope
+    - hrohdkghdkvn
+    - fedwhc
+    - dfkhbfkb 

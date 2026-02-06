@@ -5,6 +5,7 @@ intents:
   - book_hotel
   - inform
   - goodbye
+  - out_of_scope
 
 entities:
   - city
@@ -48,6 +49,9 @@ slots:
     mappings:
       - type: from_entity
         entity: number_of_guests
+        conditions:
+        - active_loop: hotel_booking_form
+          requested_slot: number_of_guests
       - type: from_text
         conditions:
           - active_loop: hotel_booking_form
@@ -85,11 +89,16 @@ responses:
   utter_goodbye:
     - text: "Goodbye 👋 Have a great day!"
 
+  utter_out_of_scope: 
+    - text: "I didn't understand that. Please provide the requested information."
+
+
 forms:
   hotel_booking_form:
     ignored_intents:
       - greet
       - goodbye
+      - out_of_scope
     required_slots:
       - city
       - check_in_date

@@ -119,6 +119,7 @@ class ValidateHotelBookingForm(FormValidationAction):
 
     def is_valid_date(self, date_string: Text) -> bool:
         """Check if string looks like a date"""
+        
         if not date_string or len(date_string.strip()) == 0:
             return False
         
@@ -172,6 +173,10 @@ class ValidateHotelBookingForm(FormValidationAction):
         tracker: Tracker,
         domain: DomainDict,
     ) -> Dict[Text, Any]:
+        
+        if tracker.get_slot("requested_slot") != "city":
+            return {"city": tracker.slots.get("city")}
+
         """Validate city - should be text, not empty"""
         if not value or len(value.strip()) == 0:
             dispatcher.utter_message(text="Please enter a city name.")
@@ -201,6 +206,10 @@ class ValidateHotelBookingForm(FormValidationAction):
         tracker: Tracker,
         domain: DomainDict,
     ) -> Dict[Text, Any]:
+        
+        if tracker.get_slot("requested_slot") != "check_in_date":
+            return {"check_in_date": tracker.slots.get("check_in_date")}
+
         """Validate check-in date and extract date range if provided"""
         
         # Check if user provided a date range (e.g., "10th to 12th")
@@ -248,6 +257,10 @@ class ValidateHotelBookingForm(FormValidationAction):
         tracker: Tracker,
         domain: DomainDict,
     ) -> Dict[Text, Any]:
+        
+        if tracker.get_slot("requested_slot") != "check_out_date":
+            return {"check_out_date": tracker.slots.get("check_out_date")}
+
         """Validate check-out date"""
         parsed_date = self.parse_date(value)
         
@@ -266,6 +279,10 @@ class ValidateHotelBookingForm(FormValidationAction):
         tracker: Tracker,
         domain: DomainDict,
     ) -> Dict[Text, Any]:
+        
+        if tracker.get_slot("requested_slot") != "number_of_guests":
+            return {"number_of_guests": tracker.slots.get("number_of_guests")}
+
         """Validate number of guests - should be a positive number"""
         
         # Check if value is None or empty
@@ -274,6 +291,20 @@ class ValidateHotelBookingForm(FormValidationAction):
                 text="Please enter the number of guests."
             )
             return {"number_of_guests": None}
+        
+        # Check for gibberish/random text
+        if isinstance(value, str):
+            value_clean = value.strip().lower()
+            
+            # If it's all letters and not a word number, it's gibberish
+            if value_clean.isalpha() and value_clean not in [
+                'one', 'two', 'three', 'four', 'five',
+                'six', 'seven', 'eight', 'nine', 'ten'
+            ]:
+                dispatcher.utter_message(
+                    text="That doesn't look like a number. Please enter the number of guests (e.g., '2', 'three')."
+                )
+                return {"number_of_guests": None}
         
         try:
             # Handle text numbers like "two", "three"
@@ -337,3 +368,4 @@ class ActionStoreInitialMessage(Action):
                 slots_to_set.append(SlotSet("check_out_date", parsed_date))
         
         return slots_to_set
+        
