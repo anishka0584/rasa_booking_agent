@@ -58,7 +58,7 @@ class ValidateHotelBookingForm(FormValidationAction):
                     parsed = parsed.replace(year=today.year)
                     if parsed < today:
                         parsed = parsed.replace(year=today.year + 1)
-                    return parsed.strftime("%d %b")  # Normalized format
+                    return parsed.strftime("%d %b")
                 except ValueError:
                     continue
         except:
@@ -68,24 +68,32 @@ class ValidateHotelBookingForm(FormValidationAction):
         return date_string
 
     def extract_date_range(self, text: Text) -> Dict[Text, Any]:
-        """Extract check-in and check-out dates from text like '10th to 12th'"""
-        # Pattern: "10th to 12th", "1 jan to 5 jan", "5 to 8 may"
+        """Extract check-in and check-out dates from text like '10th to 12th' or 'from 3 may to 5 may'"""
         patterns = [
-            (r'(\d{1,2})\s+to\s+(\d{1,2})\s+(\w+)', 'day_to_day_month'),  # 5 to 8 may
-            (r'(\d{1,2}\s+\w+)\s+to\s+(\d{1,2}\s+\w+)', 'date_to_date'),  # 1 jan to 5 jan
-            (r'(\d{1,2}(?:st|nd|rd|th)?)\s+to\s+(\d{1,2}(?:st|nd|rd|th)?)', 'ordinal_to_ordinal'),  # 10th to 12th
+            # "from 3 may to 5 may"
+            (r'from\s+(\d{1,2}\s+\w+)\s+to\s+(\d{1,2}\s+\w+)', 'date_to_date'),
+            # "from tomorrow to 5 may"
+            (r'from\s+(tomorrow|today|next week)\s+to\s+(\d{1,2}\s+\w+)', 'relative_to_date'),
+            # "from 10th to 15th"
+            (r'from\s+(\d{1,2}(?:st|nd|rd|th)?)\s+to\s+(\d{1,2}(?:st|nd|rd|th)?)', 'ordinal_to_ordinal'),
+            # "5 to 8 may"
+            (r'(\d{1,2})\s+to\s+(\d{1,2})\s+(\w+)', 'day_to_day_month'),
+            # "1 jan to 5 jan"
+            (r'(\d{1,2}\s+\w+)\s+to\s+(\d{1,2}\s+\w+)', 'date_to_date'),
+            # "10th to 12th"
+            (r'(\d{1,2}(?:st|nd|rd|th)?)\s+to\s+(\d{1,2}(?:st|nd|rd|th)?)', 'ordinal_to_ordinal'),
         ]
         
         for pattern, pattern_type in patterns:
             match = re.search(pattern, text.lower())
             if match:
-                if pattern_type == 'day_to_day_month':  # "5 to 8 may"
+                if pattern_type == 'day_to_day_month':
                     check_in = f"{match.group(1)} {match.group(3)}"
                     check_out = f"{match.group(2)} {match.group(3)}"
-                elif pattern_type == 'date_to_date':  # "1 jan to 5 jan"
+                elif pattern_type == 'relative_to_date':
                     check_in = match.group(1)
                     check_out = match.group(2)
-                else:  # "10th to 12th"
+                else:
                     check_in = match.group(1)
                     check_out = match.group(2)
                 
@@ -95,8 +103,6 @@ class ValidateHotelBookingForm(FormValidationAction):
                 }
         
         return {}
-
-        
 
     def extract_duration(self, text: Text) -> int:
         """Extract duration like 'for 5 days', 'for 3 nights'"""
@@ -119,20 +125,27 @@ class ValidateHotelBookingForm(FormValidationAction):
 
     def is_valid_date(self, date_string: Text) -> bool:
         """Check if string looks like a date"""
-        
         if not date_string or len(date_string.strip()) == 0:
             return False
         
-        # Check if it contains obvious non-date words
+        # Pure numbers (like 5555, 6666) are NOT valid dates
+        if str(date_string).strip().isdigit():
+            # Check if it's a reasonable day number (1-31)
+            try:
+                num = int(date_string)
+                if not (1 <= num <= 31):
+                    return False
+            except:
+                return False
+        
         non_date_words = ['banana', 'hello', 'hi', 'thanks', 'please', 'yes', 'no', 'ok', 'okay', 'sure']
         if date_string.lower() in non_date_words:
             return False
         
-        # Simple check: should have at least one letter or number pattern
         date_patterns = [
-            r'\d+\s+\w+',  # "5 may"
-            r'\w+\s+\d+',  # "may 5"
-            r'\d+\s+\w+\s+\d+',  # "5 may 2025"
+            r'\d+\s+\w+',
+            r'\w+\s+\d+',
+            r'\d+\s+\w+\s+\d+',
         ]
         
         for pattern in date_patterns:
@@ -146,13 +159,10 @@ class ValidateHotelBookingForm(FormValidationAction):
         try:
             today = datetime.now()
             
-            # Try to parse different date formats
             for fmt in ["%d %b", "%d %B", "%b %d", "%B %d"]:
                 try:
                     parsed = datetime.strptime(checkin_date, fmt)
-                    # Add current year
                     parsed = parsed.replace(year=today.year)
-                    # If date is in the past, use next year
                     if parsed < today:
                         parsed = parsed.replace(year=today.year + 1)
                     
@@ -161,7 +171,6 @@ class ValidateHotelBookingForm(FormValidationAction):
                 except ValueError:
                     continue
             
-            # If parsing fails, return a default
             return checkin_date
         except Exception as e:
             return checkin_date
@@ -173,30 +182,27 @@ class ValidateHotelBookingForm(FormValidationAction):
         tracker: Tracker,
         domain: DomainDict,
     ) -> Dict[Text, Any]:
+        """Validate city - only when requested"""
         
+        # CRITICAL: Only validate when form is asking for city
         if tracker.get_slot("requested_slot") != "city":
             return {"city": tracker.slots.get("city")}
 
-        """Validate city - should be text, not empty"""
         if not value or len(value.strip()) == 0:
             dispatcher.utter_message(text="Please enter a city name.")
             return {"city": None}
         
-        # Clean the value
         value = value.strip()
         
-        # Check if it's only digits
         if value.isdigit():
             dispatcher.utter_message(text="That doesn't look like a city name. Please enter a valid city.")
             return {"city": None}
         
-        # Check against common non-city words
         non_city_words = ['banana', 'hello', 'hi', 'thanks', 'please', 'yes', 'no', 'ok', 'okay', 'tomorrow', 'today', 'sure']
         if value.lower() in non_city_words:
             dispatcher.utter_message(text="That doesn't look like a city name. Please enter a valid city.")
             return {"city": None}
         
-        # Capitalize first letter of each word
         return {"city": value.title()}
 
     def validate_check_in_date(
@@ -206,34 +212,28 @@ class ValidateHotelBookingForm(FormValidationAction):
         tracker: Tracker,
         domain: DomainDict,
     ) -> Dict[Text, Any]:
+        """Validate check-in date - only when requested"""
         
+        # CRITICAL: Only validate when form is asking for check-in date
         if tracker.get_slot("requested_slot") != "check_in_date":
             return {"check_in_date": tracker.slots.get("check_in_date")}
 
-        """Validate check-in date and extract date range if provided"""
-        
-        # Check if user provided a date range (e.g., "10th to 12th")
         latest_message = tracker.latest_message.get('text', '')
         date_range = self.extract_date_range(latest_message)
         
         if date_range:
-            # User provided both dates!
             dispatcher.utter_message(
                 text=f"Got it! Check-in on {date_range['check_in_date']} and check-out on {date_range['check_out_date']}."
             )
             return date_range
         
-        # Parse single date
         parsed_date = self.parse_date(value)
         
-        # Basic validation - check if it looks like a date
         if self.is_valid_date(parsed_date):
-            # Check if duration was mentioned in initial booking request
             initial_text = tracker.slots.get('initial_message', '')
             duration = self.extract_duration(initial_text)
             
             if duration:
-                # Calculate checkout date
                 checkout_date = self.calculate_checkout(parsed_date, duration)
                 dispatcher.utter_message(
                     text=f"Check-in: {parsed_date}, Check-out: {checkout_date} ({duration} days)"
@@ -246,7 +246,7 @@ class ValidateHotelBookingForm(FormValidationAction):
             return {"check_in_date": parsed_date}
         else:
             dispatcher.utter_message(
-                text="That doesn't look like a date. Please enter a valid date (e.g., '5 may', 'tomorrow', '10th')."
+                text="That doesn't look like a date. Please enter a valid date (e.g., '5 may', 'tomorrow')."
             )
             return {"check_in_date": None}
 
@@ -257,18 +257,19 @@ class ValidateHotelBookingForm(FormValidationAction):
         tracker: Tracker,
         domain: DomainDict,
     ) -> Dict[Text, Any]:
+        """Validate check-out date - only when requested"""
         
+        # CRITICAL: Only validate when form is asking for check-out date
         if tracker.get_slot("requested_slot") != "check_out_date":
             return {"check_out_date": tracker.slots.get("check_out_date")}
 
-        """Validate check-out date"""
         parsed_date = self.parse_date(value)
         
         if self.is_valid_date(parsed_date):
             return {"check_out_date": parsed_date}
         else:
             dispatcher.utter_message(
-                text="That doesn't look like a date. Please enter a valid date (e.g., '8 may', 'tomorrow', '15th')."
+                text="That doesn't look like a date. Please enter a valid date (e.g., '8 may', 'tomorrow')."
             )
             return {"check_out_date": None}
 
@@ -279,24 +280,26 @@ class ValidateHotelBookingForm(FormValidationAction):
         tracker: Tracker,
         domain: DomainDict,
     ) -> Dict[Text, Any]:
+        """Validate number of guests - CONTEXT AWARE"""
         
-        if tracker.get_slot("requested_slot") != "number_of_guests":
+        # CRITICAL FIX: Only validate when form is asking for number of guests
+        # This prevents "5555" (rejected date) from being used as number of guests
+        requested_slot = tracker.get_slot("requested_slot")
+        latest_intent = tracker.latest_message.get('intent', {}).get('name')
+        
+        # Only process if:
+        # 1. Form is specifically asking for number_of_guests, OR
+        # 2. It's from the initial book_hotel intent
+        if requested_slot != "number_of_guests" and latest_intent != "book_hotel":
             return {"number_of_guests": tracker.slots.get("number_of_guests")}
-
-        """Validate number of guests - should be a positive number"""
         
-        # Check if value is None or empty
         if value is None or (isinstance(value, str) and len(value.strip()) == 0):
-            dispatcher.utter_message(
-                text="Please enter the number of guests."
-            )
+            dispatcher.utter_message(text="Please enter the number of guests.")
             return {"number_of_guests": None}
         
-        # Check for gibberish/random text
         if isinstance(value, str):
             value_clean = value.strip().lower()
             
-            # If it's all letters and not a word number, it's gibberish
             if value_clean.isalpha() and value_clean not in [
                 'one', 'two', 'three', 'four', 'five',
                 'six', 'seven', 'eight', 'nine', 'ten'
@@ -307,7 +310,6 @@ class ValidateHotelBookingForm(FormValidationAction):
                 return {"number_of_guests": None}
         
         try:
-            # Handle text numbers like "two", "three"
             word_to_num = {
                 "one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
                 "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10
@@ -318,7 +320,6 @@ class ValidateHotelBookingForm(FormValidationAction):
                 if value_lower in word_to_num:
                     guests = word_to_num[value_lower]
                 else:
-                    # Try to extract just the number if mixed text
                     num_match = re.search(r'\d+', value)
                     if num_match:
                         guests = int(num_match.group())
@@ -342,7 +343,7 @@ class ValidateHotelBookingForm(FormValidationAction):
 
 
 class ActionStoreInitialMessage(Action):
-    """Store the initial booking message and extract/parse dates"""
+    """Store the initial booking message and extract all available information"""
     
     def name(self) -> Text:
         return "action_store_initial_message"
@@ -356,16 +357,37 @@ class ActionStoreInitialMessage(Action):
         
         slots_to_set = [SlotSet("initial_message", latest_message)]
         
-        # Parse date entities if they exist
         validator = ValidateHotelBookingForm()
         
-        for entity in entities:
-            if entity['entity'] == 'check_in_date':
-                parsed_date = validator.parse_date(entity['value'])
-                slots_to_set.append(SlotSet("check_in_date", parsed_date))
-            elif entity['entity'] == 'check_out_date':
-                parsed_date = validator.parse_date(entity['value'])
-                slots_to_set.append(SlotSet("check_out_date", parsed_date))
+        # Try to extract date range from message (e.g., "from 3 may to 5 may")
+        date_range = validator.extract_date_range(latest_message)
+        
+        if date_range:
+            # Found date range like "from 3 may to 5 may" or "10th to 12th"
+            slots_to_set.append(SlotSet("check_in_date", date_range.get("check_in_date")))
+            slots_to_set.append(SlotSet("check_out_date", date_range.get("check_out_date")))
+            
+            dispatcher.utter_message(
+                text=f"📅 Dates captured: {date_range.get('check_in_date')} to {date_range.get('check_out_date')}"
+            )
+        else:
+            # Fallback: extract individual date entities
+            date_entities = [e for e in entities if e['entity'] == 'date']
+            
+            if len(date_entities) >= 2:
+                # Two separate date entities found
+                check_in = validator.parse_date(date_entities[0]['value'])
+                check_out = validator.parse_date(date_entities[1]['value'])
+                
+                slots_to_set.append(SlotSet("check_in_date", check_in))
+                slots_to_set.append(SlotSet("check_out_date", check_out))
+                
+                dispatcher.utter_message(
+                    text=f"📅 Dates captured: {check_in} to {check_out}"
+                )
+            elif len(date_entities) == 1:
+                # Only one date found - use as check-in
+                check_in = validator.parse_date(date_entities[0]['value'])
+                slots_to_set.append(SlotSet("check_in_date", check_in))
         
         return slots_to_set
-        

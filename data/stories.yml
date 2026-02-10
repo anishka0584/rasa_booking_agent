@@ -26,7 +26,7 @@ stories:
   steps:
     - intent: book_hotel
       entities:
-        - city
+        - city: "bangalore"
     - action: action_store_initial_message
     - action: hotel_booking_form
     - active_loop: hotel_booking_form
@@ -37,8 +37,8 @@ stories:
   steps:
     - intent: book_hotel
       entities:
-        - city
-        - number_of_guests
+        - city: "mumbai"
+        - number: 3
     - action: action_store_initial_message
     - action: hotel_booking_form
     - active_loop: hotel_booking_form
@@ -49,22 +49,23 @@ stories:
   steps:
     - intent: book_hotel
       entities:
-        - city
-        - check_in_date
-        - check_out_date
-        - number_of_guests
+        - city: "delhi"
+        - date: "tomorrow"
+        - date: "15 feb"
+        - number: 2
     - action: action_store_initial_message
     - action: hotel_booking_form
     - active_loop: hotel_booking_form
     - active_loop: null
     - action: utter_booking_confirmation
 
-- story: hotel booking with dates prefilled
+- story: hotel booking with dates and city
   steps:
     - intent: book_hotel
       entities:
-        - check_in_date
-        - check_out_date
+        - city: "goa"
+        - date: "10 may"
+        - date: "15 may"
     - action: action_store_initial_message
     - action: hotel_booking_form
     - active_loop: hotel_booking_form
@@ -111,7 +112,7 @@ stories:
       - requested_slot: city
     - intent: inform
       entities:
-        - city
+        - city: "bangalore"
     - action: hotel_booking_form
     - active_loop: null
     - action: utter_booking_confirmation
@@ -125,14 +126,10 @@ stories:
     - slot_was_set:
       - requested_slot: check_in_date
     - intent: inform
-      entities:
-        - check_in_date
     - action: hotel_booking_form
     - slot_was_set:
       - requested_slot: check_out_date
     - intent: inform
-      entities:
-        - check_out_date
     - action: hotel_booking_form
     - active_loop: null
     - action: utter_booking_confirmation
@@ -147,7 +144,31 @@ stories:
       - requested_slot: number_of_guests
     - intent: inform
       entities:
-        - number_of_guests
+        - number: 2
+    - action: hotel_booking_form
+    - active_loop: null
+    - action: utter_booking_confirmation
+
+# New story for handling invalid input that should NOT fill slots
+- story: invalid date input should not affect other slots
+  steps:
+    - intent: book_hotel
+    - action: action_store_initial_message
+    - action: hotel_booking_form
+    - active_loop: hotel_booking_form
+    - slot_was_set:
+      - requested_slot: city
+    - intent: inform
+      entities:
+        - city: "bangalore"
+    - action: hotel_booking_form
+    - slot_was_set:
+      - requested_slot: check_in_date
+    - intent: inform  # User enters invalid input like "5555"
+    - action: hotel_booking_form  # Form rejects and asks again
+    - slot_was_set:
+      - requested_slot: check_in_date  # Still asking for same slot
+    - intent: inform
     - action: hotel_booking_form
     - active_loop: null
     - action: utter_booking_confirmation

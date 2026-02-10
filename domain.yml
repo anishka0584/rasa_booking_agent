@@ -9,6 +9,8 @@ intents:
 
 entities:
   - city
+  - date
+  - number
   - check_in_date
   - check_out_date
   - number_of_guests
@@ -20,6 +22,7 @@ slots:
     mappings:
       - type: from_entity
         entity: city
+        intent: book_hotel
       - type: from_text
         conditions:
           - active_loop: hotel_booking_form
@@ -49,10 +52,14 @@ slots:
     mappings:
       - type: from_entity
         entity: number_of_guests
-        #this condition only fills the number of guests if the form is active- not direct extraction from the initial message
-        # conditions:
-        # - active_loop: hotel_booking_form
-        #   requested_slot: number_of_guests
+        intent: book_hotel
+        conditions:
+          - active_loop: hotel_booking_form
+      - type: from_entity
+        entity: number_of_guests
+        conditions:
+          - active_loop: hotel_booking_form
+            requested_slot: number_of_guests
       - type: from_text
         conditions:
           - active_loop: hotel_booking_form
@@ -92,7 +99,6 @@ responses:
 
   utter_out_of_scope: 
     - text: "I didn't understand that. Please provide the requested information."
-
 
 forms:
   hotel_booking_form:
